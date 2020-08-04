@@ -92,7 +92,7 @@ namespace StarChart.Controllers
             }
         }
 
-        [HttpPatch("{id}/name")]
+        [HttpPatch("{id}/{name}")]
         public IActionResult RenameObject(int id, string name)
         {
             var existingObject = _context.CelestialObjects.Find(id);
@@ -100,6 +100,16 @@ namespace StarChart.Controllers
 
             existingObject.Name = name;
             _context.CelestialObjects.Update(existingObject);
+            _context.SaveChanges();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var celestialObjects = _context.CelestialObjects.Where(x => x.Id == id || x.OrbitedObjectId == id);
+            if (!celestialObjects.Any()) return NotFound();
+            _context.CelestialObjects.RemoveRange(celestialObjects);
             _context.SaveChanges();
             return NoContent();
         }
