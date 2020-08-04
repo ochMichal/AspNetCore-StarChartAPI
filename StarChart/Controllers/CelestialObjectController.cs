@@ -86,10 +86,22 @@ namespace StarChart.Controllers
                 oldObject.OrbitalPeriod = celestialObject.OrbitalPeriod;
                 oldObject.OrbitedObjectId = celestialObject.OrbitedObjectId;
 
-                _context.Update(celestialObject);
+                _context.CelestialObjects.Update(oldObject);
                 _context.SaveChanges();
                 return NoContent();
             }
+        }
+
+        [HttpPatch("{id}/name")]
+        public IActionResult RenameObject(int id, string name)
+        {
+            var existingObject = _context.CelestialObjects.Find(id);
+            if (existingObject == null) return NotFound();
+
+            existingObject.Name = name;
+            _context.CelestialObjects.Update(existingObject);
+            _context.SaveChanges();
+            return NoContent();
         }
     }
 }
